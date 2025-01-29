@@ -1,5 +1,5 @@
-from typing import Any, Dict
 import json
+from typing import Any, Dict
 
 
 def read_json(filepath: str) -> Dict[str, Any]:

@@ -1,0 +1,48 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # step to checkout the repository
+      - uses: actions/checkout@v4
+
+      # step to set up python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # step to install dependencies
+      - name: Install dependencies
+        run: |
+          pip install uv
+          make install
+
+      # step to install dev dependencies
+      - name: Install dev dependencies
+        run: |
+          pip install isort pytest pytest-cov ruff
+
+      # step to run linter and pytest
+      - name: Run linter and pytest
+        run: |
+          make check
+
+      # step to run coverage and publish to codeclimate
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v9.0.0
+        if: github.ref_name == 'main'
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          debug: true

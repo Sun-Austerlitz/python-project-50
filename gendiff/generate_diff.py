@@ -3,7 +3,6 @@ from gendiff.read_json import read_json
 """
 Constants for formatting the diff output.
 """
-
 # if a key is present in the second file but not in the first
 ADDED = "  + {key}: {value}"
 

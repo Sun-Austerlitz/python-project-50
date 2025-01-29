@@ -13,5 +13,16 @@ gendiff = "gendiff.scripts.gendiff:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.uv]
+dev-dependencies = ["ruff", "pytest"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["gendiff"]
+
+[dependency-groups]
+dev = [
+    "isort>=6.0.0",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.3",
+]
