@@ -24,7 +24,7 @@ jobs:
       # step to install dependencies
       - name: Install dependencies
         run: |
-          pip install uv
+          pip install uv pyYAML
           make install
 
       # step to install dev dependencies
