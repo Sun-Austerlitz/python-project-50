@@ -1,5 +1,7 @@
 from .core import build_diff, read_file
-from .formatter import format_stylish
+from .formatter.format_json import format_json
+from .formatter.format_plain import format_plain
+from .formatter.format_stylish import format_stylish
 
 
 def generate_diff(file1: str, file2: str, format_name: str = "stylish") -> str:
@@ -20,5 +22,9 @@ def generate_diff(file1: str, file2: str, format_name: str = "stylish") -> str:
 
     if format_name == "stylish":
         return format_stylish(diff)
+    elif format_name == "plain":
+        return format_plain(diff)
+    elif format_name == 'json':
+        return format_json(diff)
     else:
         raise ValueError(f"Unsupported format: {format_name}")

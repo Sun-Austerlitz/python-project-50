@@ -1,14 +1,11 @@
 install:
 	uv sync
 
-build:
-	uv build
-
-run:
-	uv run gendiff
-
 test:
 	uv run pytest
+
+build:
+	uv build
 
 test-coverage:
 	uv run pytest --cov=gendiff --cov-report xml tests/
