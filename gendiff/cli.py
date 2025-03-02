@@ -19,6 +19,6 @@ def parse_args() -> Namespace:
         "--format",
         help="Set format of output",
         default="stylish",
-        choices=["stylish"],
+        choices=["stylish", "plain", "json"],
     )
     return parser.parse_args()

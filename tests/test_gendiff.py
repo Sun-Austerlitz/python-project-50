@@ -37,10 +37,18 @@ def read_file(filename: str) -> str:
     [
         ("file1.json", "file2.json", "result.txt", "stylish"),
         ("file1.yaml", "file2.yaml", "result.txt", "stylish"),
+        ("file1.json", "file2.json", "result_plain.txt", "plain"),
+        ("file1.yaml", "file2.yaml", "result_plain.txt", "plain"),
+        ("file1.json", "file2.json", "result_json.txt", "json"),
+        ("file1.yaml", "file2.yaml", "result_json.txt", "json"),
     ],
     ids=[
         "json_stylish",
         "yaml_stylish",
+        "json_plain",
+        "yaml_plain",
+        "json_json",
+        "yaml_json",
     ],
 )
 def test_generate_diff(
