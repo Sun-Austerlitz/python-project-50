@@ -1,38 +1,49 @@
 import json
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 
-def format_json(diff: Dict[str, Any]) -> str:
+def format_json(diff: List[Dict[str, Any]]) -> str:
     """
     Formats the diff in a JSON format.
 
     Parameters:
-        diff (dict): The diff representation.
+        diff (list): The diff representation.
 
     Returns:
         str: The formatted JSON diff.
     """
 
-    def replace_nested_status(diff: Dict[str, Any]) -> Dict[str, Any]:
+    def convert_to_nested_dict(diff: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
-        Recursively replaces 'nested' status with 'unchanged' in the diff.
+        Converts the diff list to a nested dictionary format.
 
         Parameters:
-            diff (dict): The diff representation.
+            diff (list): The diff representation.
 
         Returns:
-            dict: The updated diff with 'nested' status replaced.
+            dict: The nested dictionary representation.
         """
-        updated_diff = {}
-        for key, value in diff.items():
-            if value.get("status") == "nested":
-                updated_diff[key] = {
+        nested_dict = {}
+        for item in diff:
+            key = item["key"]
+            status = item["status"]
+            if status == "nested":
+                nested_dict[key] = {
                     "status": "unchanged",
-                    "value": replace_nested_status(value["children"]),
+                    "value": convert_to_nested_dict(item["children"]),
                 }
-            else:
-                updated_diff[key] = value
-        return updated_diff
+            elif status in ["added", "removed", "unchanged"]:
+                nested_dict[key] = {
+                    "status": status,
+                    "value": item["value"],
+                }
+            elif status == "changed":
+                nested_dict[key] = {
+                    "status": status,
+                    "old_value": item["old_value"],
+                    "new_value": item["new_value"],
+                }
+        return nested_dict
 
-    updated_diff = replace_nested_status(diff)
-    return json.dumps(updated_diff, indent=4)
+    nested_diff = convert_to_nested_dict(diff)
+    return json.dumps(nested_diff, indent=4)

@@ -1,12 +1,19 @@
 from typing import Any, Dict, List
 
+from ..constants import (
+    STATUS_ADDED,
+    STATUS_CHANGED,
+    STATUS_NESTED,
+    STATUS_REMOVED,
+)
 
-def format_plain(diff: Dict[str, Any], parent_key: str = "") -> str:
+
+def format_plain(diff: List[Dict[str, Any]], parent_key: str = "") -> str:
     """
     Formats the diff in a plain format.
 
     Parameters:
-        diff (dict): The diff representation.
+        diff (list): The diff representation.
         parent_key (str): The parent key for nested properties.
 
     Returns:
@@ -16,51 +23,52 @@ def format_plain(diff: Dict[str, Any], parent_key: str = "") -> str:
     return "\n".join(lines)
 
 
-def _format_diff(diff: Dict[str, Any], parent_key: str) -> List[str]:
+def _format_diff(diff: List[Dict[str, Any]], parent_key: str) -> List[str]:
     """
     Recursively formats the diff into a list of plain text lines.
 
     Parameters:
-        diff (dict): The diff representation.
+        diff (list): The diff representation.
         parent_key (str): The parent key for nested properties.
 
     Returns:
         List[str]: The list of formatted plain text lines.
     """
     lines = []
-    for key, value in diff.items():
+    for item in diff:
+        key = item["key"]
         current_key = f"{parent_key}.{key}" if parent_key else key
-        status = value.get("status")
+        status = item["status"]
 
-        if status == "added":
+        if status == STATUS_ADDED:
             lines.append(
                 f"Property '{current_key}' was added with value: {
-                    format_value(value['value'])}"
+                    to_str(item['value'])}"
             )
-        elif status == "removed":
+        elif status == STATUS_REMOVED:
             lines.append(f"Property '{current_key}' was removed")
-        elif status == "changed":
-            old_value = format_value(value["old_value"])
-            new_value = format_value(value["new_value"])
+        elif status == STATUS_CHANGED:
+            old_value = to_str(item["old_value"])
+            new_value = to_str(item["new_value"])
             lines.append(
-                f"Property '{
-                    current_key}' was updated. From {old_value} to {new_value}"
+                f"Property '{current_key}' was updated. "
+                f"From {old_value} to {new_value}"
             )
-        elif status == "nested":
-            lines.extend(_format_diff(value["children"], current_key))
+        elif status == STATUS_NESTED:
+            lines.extend(_format_diff(item["children"], current_key))
 
     return lines
 
 
-def format_value(value: Any) -> str:
+def to_str(value: Any) -> str:
     """
-    Formats a value for the plain output.
+    Converts a value to its string representation.
 
     Parameters:
-        value: The value to format.
+        value: The value to convert.
 
     Returns:
-        str: The formatted value.
+        str: The string representation of the value.
     """
     if isinstance(value, dict):
         return "[complex value]"
