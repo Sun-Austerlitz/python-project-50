@@ -18,5 +18,4 @@ def generate_diff(file1: str, file2: str, format_name: str = "stylish") -> str:
     data1 = parse_data(read_file(file1), get_file_format(file1))
     data2 = parse_data(read_file(file2), get_file_format(file2))
     diff = build_diff(data1, data2)
-    formatter = select_formatter(format_name)
-    return formatter(diff)
+    return select_formatter(diff, format_name)
